@@ -24,12 +24,14 @@ jobs:
       run: go test -v ./...
 
     - name: Build
-      run: go build -v ./...
+      run: |
+        go build -v -o app ./...
+        chmod +x app
 
     - name: Test API endpoints
       run: |
         # 启动服务器（后台运行）
-        ./go-actions-demo &
+        ./app &
         sleep 5  # 等待服务器启动
         
         # 测试创建用户
@@ -38,4 +40,7 @@ jobs:
           -d '{"username":"testuser","email":"test@example.com"}'
         
         # 测试获取用户列表
-        curl http://localhost:8888/users 
+        curl http://localhost:8888/users
+        
+        # 结束进程
+        pkill app 
